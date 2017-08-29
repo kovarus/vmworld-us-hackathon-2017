@@ -1,0 +1,42 @@
+{% extends "header.html" %} {% block body %}
+<div class="login-wrapper">
+    <form class="login" id="loginform", method="POST">
+        <label class="title">
+            {%if session['logged_in']==True%}
+                <div class="alert alert-success">
+                    <div class="alert-item">
+                        <span>
+                            Already Logged In
+                        </span>
+                    </div>
+                </div>
+            {% endif %}
+            <h3 class="welcome">Welcome to</h3>
+            Codename: Gideon, a VMware Alexa Skill
+        </label>
+        <div class="login-group">
+            {%if session['logged_in']==True%}
+            <input class="username" type="text" name="username" placeholder="Username" disabled>
+            <input class="password" type="password" name="password" placeholder="Password" disabled>
+            {% else %}
+            <input class="username" type="text" name="username" placeholder="Username" value="{{ request.form.username }}">
+            <input class="password" type="password" name="password" placeholder="Password" value="{{ request.form.password }}">
+            {% endif %}
+            {% if session['wrong_pass']==True %}
+            <div class="error active">
+                Invalid user name or password
+            </div>
+            {% else %}
+            <div>
+                Enter Username and Password
+            </div>
+            {% endif %}
+            {%if session['logged_in']==True%}
+                <button type="submit" class="btn btn-primary" disabled>NEXT</button>
+            {%else%}
+                <button type="submit" class="btn btn-primary">NEXT</button>
+            {%endif%}
+        </div>
+    </form>
+</div>
+{% endblock %}
