@@ -56,50 +56,6 @@ def get_rest_api_data(req_url):
         return
     return resp
 
-
-# Function to login to vSphere SOAP API
-# returns ServiceInstance
-def auth_vcenter_soap(url, username, password):
-    config.read("/srv/avss/appdata/etc/config.ini")
-    url = config.get("vcenterConfig", "url")
-    username = config.get("vcenterConfig", "user")
-    password = config.get("vcenterConfig", "password")
-    print('Authenticating to vCenter SOAP API, user: {}'.format(username))
-
-    context = None
-
-    if sys.version_info[:3] > (2, 7, 8):
-        context = ssl.create_default_context()
-        context.check_hostname = False
-        context.verify_mode = ssl.CERT_NONE
-
-    pattern = '(?:http.*://)?(?P<host>[^:/ ]+).?(?P<port>[0-9]*).*'
-    parsed = re.search(pattern, url)
-    host = parsed.group('host')
-
-    si = SmartConnect(host=host,
-                      user=username,
-                      pwd=password,
-                      port=443,
-                      sslContext=context)
-
-    atexit.register(Disconnect, si)
-
-    return si
-
-
-# Function to login to vSAN Mgmt API
-# return vSAN Managed Objects
-def auth_vsan_soap(si):
-    context = None
-    if sys.version_info[:3] > (2, 7, 8):
-        context = ssl.create_default_context()
-        context.check_hostname = False
-        context.verify_mode = ssl.CERT_NONE
-    vcMos = vsanapiutils.GetVsanVcMos(si._stub, context=context)
-    return vcMos
-
-
 def get_vcenter_health_status():
     print("Retreiving vCenter Server Appliance Health ...")
     config.read("/srv/avss/appdata/etc/config.ini")
